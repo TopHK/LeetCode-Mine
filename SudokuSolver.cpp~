@@ -1,0 +1,126 @@
+/*************************************************************************
+	> File Name: SudokuSolver.cpp
+	> Author: 
+	> Mail: 
+	> Created Time: 2015年07月11日 星期六 15时29分12秒
+ ************************************************************************/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+class Solution 
+{
+public:
+    bool check(const vector<vector<char> >& board, int row, int col, char ch)
+    {
+        for(int j=0; j<col; ++j)
+            if(ch == board[row][j]) return false;
+        for(int i=0; i<row; ++i)
+            if(ch == board[i][col]) return false;
+        int iStart = row-(row%3);
+        int jStart = col-(col%3);
+        for(int i=iStart; i<iStart+3; ++i)
+            for(int j=jStart; j<jStart+3; ++j)
+                if(ch == board[i][j]) return false;
+        return true;
+    }
+
+    bool solveSudoKuCore(vector<vector<char> >& board, int row, int col)
+    {
+        if(row==8 && col==8) 
+        {
+            if(board[8][8] == '.') 
+            {
+                for(char ch='1'; ch<='9'; ++ch)
+                {
+                    if(check(board, 8, 8, ch)) 
+                    {
+                        board[8][8] = ch;
+                        return true;
+                    }
+                }
+                return false;
+            }
+            else return check(board, row, col, board[row][col]);
+        }
+       
+        if(board[row][col] != '.')
+        {
+            if(check(board, row, col, board[row][col])) 
+            {
+                if(col < 8) return solveSudoKuCore(board, row, col+1);
+                else return solveSudoKuCore(board, row+1, 0);
+            }
+            return false;
+        }
+        else 
+        {
+            for(char ch='1'; ch<='9'; ++ch)
+            {
+                board[row][col] = ch;
+                if(check(board, row, col, ch))
+                {
+                    if(col < 8) return solveSudoKuCore(board, row, col+1);
+                    else return solveSudoKuCore(board, row+1, 0);
+                }
+                board[row][col] = '.';
+            }           
+        }
+    }
+
+    void solveSudoKu(vector<vector<char> >& board)
+    {
+        solveSudoKuCore(board, 0, 0);
+    }
+};
+
+void print(const vector<vector<char> >& board)
+{
+    for(int i=0; i<9; ++i)
+    {
+        for(int j=0; j<9; ++j)
+            cout<<board[i][j]<<" ";
+        cout<<endl;
+    }
+    cout<<endl;
+}
+
+int main()
+{
+    char row1[9] = {'5', '3', '.', '.', '7', '.', '.', '.', '.'};
+    vector<char> vec1(row1, row1+9);
+    char row2[9] = {'6', '.', '.', '1', '9', '5', '.', '.', '.'};
+    vector<char> vec2(row2, row2+9);
+    char row3[9] = {'.', '9', '8', '.', '.', '.', '.', '6', '.'};
+    vector<char> vec3(row3, row3+9);
+    char row4[9] = {'8', '.', '.', '.', '6', '.', '.', '.', '3'};
+    vector<char> vec4(row4, row4+9);
+    char row5[9] = {'4', '.', '.', '8', '.', '3', '.', '.', '1'};
+    vector<char> vec5(row5, row5+9);
+    char row6[9] = {'7', '.', '.', '.', '2', '.', '.', '.', '6'};
+    vector<char> vec6(row6, row6+9);
+    char row7[9] = {'.', '6', '.', '.', '.', '.', '2', '8', '.'};
+    vector<char> vec7(row7, row7+9);
+    char row8[9] = {'.', '.', '.', '4', '1', '9', '.', '.', '5'};
+    vector<char> vec8(row8, row8+9);
+    char row9[9] = {'.', '.', '.', '.', '8', '.', '.', '7', '9'};
+    vector<char> vec9(row9, row9+9);
+    vector<vector<char> > board;
+    board.push_back(vec1);
+    board.push_back(vec2);
+    board.push_back(vec3);
+    board.push_back(vec4);
+    board.push_back(vec5);
+    board.push_back(vec6);
+    board.push_back(vec7);
+    board.push_back(vec8);
+    board.push_back(vec9);
+    print(board);
+    Solution sol;
+    sol.solveSudoKu(board);
+    print(board);
+
+    return 0;
+}
+
